@@ -1,8 +1,8 @@
-// Name Field
+// Focus Name Field On Load
 const nameField = document.getElementById('name')
 nameField.focus()
 
-// Job Role Section
+// Job Role Section Variables
 const otherJobRole = document.getElementById('other-job-role')
 const jobRole = document.getElementById('title')
 // Hide Other Job Role section by default
@@ -17,14 +17,14 @@ function showOrHideOther() {
   }
 }
 
+// Event handler for job role change
 jobRole.addEventListener("change", showOrHideOther)
 
-// T-shirt Info Section
+// T-shirt Info Section Variables
 const colors = document.getElementById('color')
 const colorOptions = colors.children
 const shirtColors = document.getElementById('shirt-colors')
 const shirtDesign = document.getElementById('design')
-
 
 // Hide Shirt Colors Element
 colors.disabled = true;
@@ -45,25 +45,29 @@ const showColor = (e) => {
   }
 }
 
+// Event handler for color change
 shirtDesign.addEventListener("change", showColor)
 
-// Register for Activities Section
+// Register for Activities Section Variables
 const activitiesField = document.getElementById('activities')
 const activitiesBox = document.getElementById('activities-box')
 const totalAmount = document.getElementById('activities-cost')
 const activityDates = activitiesBox.querySelectorAll('input')
+// Total cost amount variable
 let total = 0
 
+// Function to calculate total cost based on selected activities
 const totalCost = (e) => {
   const activityCost = e.target.getAttribute('data-cost')
-  if (e.target.checked === true) {
+    if (e.target.checked === true) {
     total = total + +activityCost
-  } else if (e.target.checked === false) {
+    } else if (e.target.checked === false) {
     total = total - activityCost
-  }
+    }
   totalAmount.innerHTML = `Total: $${total}`
 }
 
+// Function to disable conflicting activity times
 const activityConflict = (e) => {
 for (i = 0; i < activityDates.length; i++) {
   let targetDayAndTime = e.target.getAttribute('data-day-and-time')
@@ -80,20 +84,24 @@ for (i = 0; i < activityDates.length; i++) {
   }
 }
 
+// Event handlers for total cost and activity conflicts
 activitiesBox.addEventListener("change", activityConflict)
 activitiesField.addEventListener("change", totalCost)
 
-// Payment Info Section
+// Payment Info Section Variables
 const paymentMethod = document.getElementById('payment')
 const creditCard = document.getElementById('credit-card')
 const paypal = document.getElementById('paypal')
 const bitcoin = document.getElementById('bitcoin')
 
+// Hide Paypal and Bitcoin by default
 paypal.hidden = true
 bitcoin.hidden = true
 
+// Select Credit Card by Default
 paymentMethod.children[1].setAttribute('selected', true)
 
+// Function to display correct payment method depending on selection
 const displayPaymentMethod = (e) => {
   if (e.target.value === paypal.getAttribute('id')) {
     paypal.hidden = false
@@ -110,9 +118,10 @@ const displayPaymentMethod = (e) => {
   }
 }
 
+// Event handler for displaying payment method
 paymentMethod.addEventListener("change", displayPaymentMethod)
 
-// Form Validation
+// Form Validation Variables
 const emailAddress = document.getElementById('email')
 const cardNumber = document.getElementById('cc-num')
 const zipCode = document.getElementById('zip')
@@ -120,6 +129,7 @@ const cvv = document.getElementById('cvv')
 const form = document.querySelector('form')
 const emailAddressParent = emailAddress.parentElement
 
+// Name Validator
 const nameValidator = () => {
   const nameValue = nameField.value
   const isValidName = /^[a-zA-Z]+ ?[a-zA-Z]*? ?[a-zA-Z]*?$/.test(nameValue)
@@ -135,15 +145,18 @@ const nameValidator = () => {
 const emailCannotBeBlank = `<span id="email-hint" class="email-hint hint">Email address cannot be blank.</span>`
 const emailNeedsFormatting = `<span id="email-hint" class="email-hint hint">Email address needs an '@' and '.' symbol.</span>`
 
+// Email Validator
 const emailValidator = () => {
   const emailValue = emailAddress.value
   const isValidEmail = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailValue)
 
+  // Function to clear added HTML from conditional error message
   function clearEmailHTML () {
     while (emailAddress.nextSibling) {
       emailAddressParent.removeChild(emailAddress.nextSibling)
     }
   }
+  // Validate email and conditional errors
   if (isValidEmail) {
     validationPass(emailAddress)
   } else if (emailValue === "") {
@@ -158,6 +171,7 @@ const emailValidator = () => {
   return isValidEmail
 }
 
+// Register section validator
 const registerValidator = () => {
   const registerSectionIsValid = total > 0
   if (registerSectionIsValid) {
@@ -168,6 +182,7 @@ const registerValidator = () => {
   return registerSectionIsValid
 }
 
+// Credit Card Number Validator
 const cardNumberValidator = () => {
   const cardNumberValue = cardNumber.value
   const isValidCardNumber = /^\d{13,16}$/.test(cardNumberValue)
@@ -179,6 +194,7 @@ const cardNumberValidator = () => {
   return isValidCardNumber
 }
 
+// Zip Code Validator
 const zipCodeValidator = () => {
   const zipCodeValue = zipCode.value
   const isValidZipCode = /^\d{5}$/.test(zipCodeValue)
@@ -190,6 +206,7 @@ const zipCodeValidator = () => {
   return isValidZipCode
 }
 
+// CVV Validator
 const cvvValidator = () => {
   const cvvValue = cvv.value
   const isValidCvv = /^\d{3}$/.test(cvvValue)
@@ -201,6 +218,32 @@ const cvvValidator = () => {
   return isValidCvv
 }
 
+// Input validation indicators
+// Change styling when validation pass
+function validationPass(element) {
+  element.parentElement.classList.add('valid')
+  element.parentElement.classList.remove('not-valid')
+  element.parentElement.lastElementChild.style.display = 'none'
+}
+// Change styling when validation fails
+function validationFail(element) {
+  element.parentElement.classList.add('not-valid')
+  element.parentElement.classList.remove('valid')
+  element.parentElement.lastElementChild.style.display = 'block'
+}
+
+// Event handler for Real-Time Validator
+form.addEventListener('change', e => {
+  nameValidator()
+  emailValidator()
+  registerValidator()
+  cardNumberValidator()
+  zipCodeValidator()
+  cvvValidator()
+  }
+)
+
+// Event handler for form submission
 form.addEventListener("submit", e => {
   nameValidator()
   emailValidator()
@@ -209,6 +252,7 @@ form.addEventListener("submit", e => {
   zipCodeValidator()
   cvvValidator()
 
+  // Prevent form from submitting if validators fail
     if (
     !nameValidator() ||
     !emailValidator() ||
@@ -216,7 +260,7 @@ form.addEventListener("submit", e => {
     ) {
     e.preventDefault()
   }
-
+  // Prevent form submission if credit card is selected and validator fails
     if (paymentMethod.children[1].selected) {
       if (
       !cardNumberValidator() ||
@@ -229,17 +273,7 @@ form.addEventListener("submit", e => {
   }  
 )
 
-form.addEventListener('change', e => {
-  nameValidator()
-  emailValidator()
-  registerValidator()
-  cardNumberValidator()
-  zipCodeValidator()
-  cvvValidator()
-  }
-)
-
-// Accessibility
+// Accessibility features variables
 const checkBox = document.getElementById('activities').getElementsByTagName('input')
 // focus on register for activities box
 for (let i = 0; i < checkBox.length; i++) {
@@ -251,19 +285,7 @@ for (let i = 0; i < checkBox.length; i++) {
   })
 }
 
-// Input validation indicators
-function validationPass(element) {
-  element.parentElement.classList.add('valid')
-  element.parentElement.classList.remove('not-valid')
-  element.parentElement.lastElementChild.style.display = 'none'
-}
 
-function validationFail(element) {
-  element.parentElement.classList.add('not-valid')
-  element.parentElement.classList.remove('valid')
-  element.parentElement.lastElementChild.style.display = 'block'
-
-}
 
 
 
