@@ -1,6 +1,6 @@
 # interactive-form-v3
  Project 3 - Interactive Form
- completed by Anthony Setiadi
+ completed by Anthony Setiadi for the purposes of the Techdegree Full Stack Javascript Course
 
 *Extra Features*
 
